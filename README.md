@@ -1,4 +1,4 @@
-# Домашнее задание к занятию 1 «Введение в Ansible»
+# Домашнее задание к занятию 1 «Введение в Ansible» - `Котуков Евгений`
 
 ## Подготовка к выполнению
 
@@ -9,16 +9,98 @@
 ## Основная часть
 
 1. Попробуйте запустить playbook на окружении из `test.yml`, зафиксируйте значение, которое имеет факт `some_fact` для указанного хоста при выполнении playbook.
+
+### Решение:
+
+<img src = "img/anb-01.png" width = 100%>
+
+
 2. Найдите файл с переменными (group_vars), в котором задаётся найденное в первом пункте значение, и поменяйте его на `all default fact`.
+
+### Решение:
+
+<img src = "img/anb-02.png" width = 100%>
+
 3. Воспользуйтесь подготовленным (используется `docker`) или создайте собственное окружение для проведения дальнейших испытаний.
+
+### Решение:
+
+Запустил один контейнер с именем ubuntu и образом ubuntu:24.04 и один с именем centos7 и образом centos:7
+
 4. Проведите запуск playbook на окружении из `prod.yml`. Зафиксируйте полученные значения `some_fact` для каждого из `managed host`.
+
+### Решение:
+
+Для выполнения задания пришлось дополнительно вручную установить python3 в ubuntu с образом ubuntu:24.04, т.к. по умолчанию получал ошибку:
+
+```
+eugenie2@eugenie2-VirtualBox:~/net-homework-ansible-01-base/playbook$ ansible-playbook -i inventory/prod.yml site.yml
+
+PLAY [Print os facts] *****************************************************************************************************************************
+
+TASK [Gathering Facts] ****************************************************************************************************************************
+fatal: [ubuntu]: FAILED! => {"ansible_facts": {}, "changed": false, "failed_modules": {"ansible.legacy.setup": {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "failed": true, "module_stderr": "/bin/sh: 1: /usr/bin/python: not found\n", "module_stdout": "", "msg": "The module failed to execute correctly, you probably need to set the interpreter.\nSee stdout/stderr for the exact error", "rc": 127, "warnings": ["No python interpreters found for host ubuntu (tried ['python3.12', 'python3.11', 'python3.10', 'python3.9', 'python3.8', 'python3.7', 'python3.6', '/usr/bin/python3', '/usr/libexec/platform-python', 'python2.7', '/usr/bin/python', 'python'])"]}}, "msg": "The following modules failed to execute: ansible.legacy.setup\n"}
+ok: [centos7]
+
+TASK [Print OS] ***********************************************************************************************************************************
+ok: [centos7] => {
+    "msg": "CentOS"
+}
+
+TASK [Print fact] *********************************************************************************************************************************
+ok: [centos7] => {
+    "msg": "el"
+}
+
+PLAY RECAP ****************************************************************************************************************************************
+centos7                    : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+ubuntu                     : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
+```
+
+После установки python3 плейбук прошел успешно:
+
+<img src = "img/anb-03.png" width = 100%>
+
 5. Добавьте факты в `group_vars` каждой из групп хостов так, чтобы для `some_fact` получились значения: для `deb` — `deb default fact`, для `el` — `el default fact`.
+
+### Решение:
+
+Изменил значения в `group_vars/deb/examp.yml` и `group_vars/el/examp.py`
+
 6.  Повторите запуск playbook на окружении `prod.yml`. Убедитесь, что выдаются корректные значения для всех хостов.
+
+<img src = "img/anb-056.png" width = 100%>
+
 7. При помощи `ansible-vault` зашифруйте факты в `group_vars/deb` и `group_vars/el` с паролем `netology`.
+
+### Решение:
+
+<img src = "img/anb-07.png" width = 100%>
+
 8. Запустите playbook на окружении `prod.yml`. При запуске `ansible` должен запросить у вас пароль. Убедитесь в работоспособности.
+
+### Решение:
+
+<img src = "img/anb-08.png" width = 100%>
+
 9. Посмотрите при помощи `ansible-doc` список плагинов для подключения. Выберите подходящий для работы на `control node`.
+
+### Решение:
+
+<img src = "img/anb-09.png" width = 100%>
+
 10. В `prod.yml` добавьте новую группу хостов с именем  `local`, в ней разместите localhost с необходимым типом подключения.
+
+### Решение:
+
+<img src = "img/anb-10.png" width = 100%>
+
 11. Запустите playbook на окружении `prod.yml`. При запуске `ansible` должен запросить у вас пароль. Убедитесь, что факты `some_fact` для каждого из хостов определены из верных `group_vars`.
+
+### Решение:
+
+<img src = "img/anb-11.png" width = 100%>
+
 12. Заполните `README.md` ответами на вопросы. Сделайте `git push` в ветку `master`. В ответе отправьте ссылку на ваш открытый репозиторий с изменённым `playbook` и заполненным `README.md`.
 13. Предоставьте скриншоты результатов запуска команд.
 
